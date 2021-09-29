@@ -18,17 +18,17 @@ rtn_sgma = 0.12
 # ASSUMPTIONS: DATES
 yrs = 25
 beg_dt = dt.date(2022,1,1)
-end_dt = beg_dt + dt.timedelta(years = yrs)
-end_dt_plot = end_dt + dt.timedelta(months = 1)
-dt_yr5 = beg_dt + dt.timedelta(years = 5)
-dt_yr10 = beg_dt + dt.timedelta(years = 10)
-dt_yr20 = beg_dt + dt.timedelta(years = 20)
+end_dt = beg_dt + dt.timedelta(weeks = yrs * 52)
+end_dt_plot = end_dt + dt.timedelta(days = 30)
+dt_yr5 = beg_dt + dt.timedelta(weeks = 5 * 52)
+dt_yr10 = beg_dt + dt.timedelta(weeks = 10 * 52)
+dt_yr20 = beg_dt + dt.timedelta(weeks = 20 * 52)
 frq = 'MS'
 pds = (end_dt.year - beg_dt.year) * 12 + (end_dt.month - beg_dt.month) + 1
 dates = pd.date_range(start = beg_dt, freq = frq, end = end_dt)
 
 # ASSUMPTIONS: OTHER
-sims = 101
+sims = 51
 cols = ['BB','Contrib','Returns','EB']
 plt_lgnd = ['Median','10th Percentile','90th Percentile']
 
@@ -46,7 +46,7 @@ for sim in range(sims):
     exp_ret = pd.DataFrame(np.random.normal(rtn_mu, rtn_sgma, pds), index = dates)
     
     for index, row in temp_df.iterrows():
-        if index == beg_date:
+        if index == beg_dt:
             row['BB'] = 0
             row['Contrib'] = bal_init + contrib
             row['Returns'] = (row['BB'] + row['Contrib'] / 2) * (exp_ret.loc[index,:].values[0] / 12)
@@ -70,9 +70,9 @@ stat_df = eb_df.loc[:,[col_med, col_90p, col_10p]]
 plt.close()
 fig, ax = plt.subplots(1,1, figsize = (15,7))
 stat_df.plot.line(ax = ax, legend = True).legend(plt_lgnd, fontsize = 14)
-plt.scatter([dt_24] * 3, stat_df.loc[dt_24,:].values, marker = 'o', c = 'red', s = 50)
-plt.scatter([dt_26] * 3, stat_df.loc[dt_26,:].values, marker = 'o', c = 'blue', s = 50)
-plt.scatter([end_dt] * 3, stat_df.loc[end_dt,:].values, marker = 'o', c = 'black', s = 50)
+plt.scatter([dt_yr5] * 3, stat_df.loc[dt_yr5,:].values, marker = 'o', c = 'red', s = 50)
+plt.scatter([dt_yr10] * 3, stat_df.loc[dt_yr10,:].values, marker = 'o', c = 'blue', s = 50)
+plt.scatter([dt_yr20] * 3, stat_df.loc[dt_yr20,:].values, marker = 'o', c = 'black', s = 50)
 plt.title('Figure 1:Projected Portfolio Balance', fontweight = 'bold', fontsize = 15)
 plt.ylabel('Projected Wealth ($)', fontsize = 14)
 plt.xticks(fontsize = 14)
