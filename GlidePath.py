@@ -20,9 +20,7 @@ yrs = 25
 beg_dt = dt.date(2022,1,1)
 end_dt = beg_dt + dt.timedelta(weeks = yrs * 52)
 end_dt_plot = end_dt + dt.timedelta(days = 30)
-dt_yr5 = beg_dt + dt.timedelta(weeks = 5 * 52)
-dt_yr10 = beg_dt + dt.timedelta(weeks = 10 * 52)
-dt_yr20 = beg_dt + dt.timedelta(weeks = 20 * 52)
+key_dates = [dt.date(2026,1,1), dt.date(2031,1,1), dt.date(2041,1,1)]
 frq = 'MS'
 pds = (end_dt.year - beg_dt.year) * 12 + (end_dt.month - beg_dt.month) + 1
 dates = pd.date_range(start = beg_dt, freq = frq, end = end_dt)
@@ -70,18 +68,18 @@ stat_df = eb_df.loc[:,[col_med, col_90p, col_10p]]
 plt.close()
 fig, ax = plt.subplots(1,1, figsize = (15,7))
 stat_df.plot.line(ax = ax, legend = True).legend(plt_lgnd, fontsize = 14)
-plt.scatter([dt_yr5] * 3, stat_df.loc[dt_yr5,:].values, marker = 'o', c = 'red', s = 50)
-plt.scatter([dt_yr10] * 3, stat_df.loc[dt_yr10,:].values, marker = 'o', c = 'blue', s = 50)
-plt.scatter([dt_yr20] * 3, stat_df.loc[dt_yr20,:].values, marker = 'o', c = 'black', s = 50)
+plt.scatter([key_dates[0]] * 3, stat_df.loc[key_dates[0],:].values, marker = 'o', c = 'red', s = 50)
+plt.scatter([key_dates[1]] * 3, stat_df.loc[key_dates[1],:].values, marker = 'o', c = 'blue', s = 50)
+plt.scatter([key_dates[2]] * 3, stat_df.loc[key_dates[2],:].values, marker = 'o', c = 'black', s = 50)
 plt.title('Figure 1:Projected Portfolio Balance', fontweight = 'bold', fontsize = 15)
 plt.ylabel('Projected Wealth ($)', fontsize = 14)
 plt.xticks(fontsize = 14)
 plt.yticks(fontsize = 14)
-ax.set_xlim([beg_dt, end_dt_plt])
+ax.set_xlim([beg_dt, end_dt_plot])
 
 fmt = '${x:,.0f}'
 tick = mtick.StrMethodFormatter(fmt)
 plt.gca().yaxis.set_major_formatter(tick)
 
 # DISPLAY BALANCES AS OF KEY DATES
-print(stat_df.loc[[dt_yr5,dt_yr10,dt_yr20],:])
+print(stat_df.loc[key_dates,:])
